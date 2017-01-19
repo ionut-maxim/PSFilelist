@@ -14,3 +14,5 @@ Foreach($import in @($Public + $Private)) {
         Write-Error -Message "Failed to import function $($import.fullname): $_"
     }
 }
+
+Update-FormatData -AppendPath (Join-Path $PSScriptRoot '*.format.ps1xml') -ErrorAction SilentlyContinue

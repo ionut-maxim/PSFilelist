@@ -7,11 +7,9 @@ function Get-FLTorrent {
         [string]
         $Name,
         [Parameter()]
+        [ValidateSet('Hibrid','Relevanta','Data','Marime','Downloads','Peers')]
         [string]
-        $Search='searchin=0',
-        [Parameter()]
-        [string]
-        $Sort='sort=0',
+        $Sort='Hibrid',
         [Parameter()]
         [int]
         $Pages
@@ -21,8 +19,6 @@ function Get-FLTorrent {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-        #$ParameterAttribute.Mandatory = $true
-        #$ParameterAttribute.Position = 1
         $AttributeCollection.Add($ParameterAttribute)
         $HTML = Invoke-WebRequest -Uri ('{0}/browse.php' -f $Script:BaseUri) -WebSession $Script:session
         $Document = New-Object -TypeName HtmlAgilityPack.HtmlDocument
@@ -57,9 +53,9 @@ function Get-FLTorrent {
                 }
             }
         }
-        if ($Name -or $Category) {
+        if ($Name -or $Category -or $Sort) {
             $Name = $Name -replace ' ', '+'
-            $Query = ('{0}/browse.php?search={1}&{2}&{3}&{4}' -f $Script:BaseUri, $Name, $CategoryId, $Search, $Sort)
+            $Query = ('{0}/browse.php?search={1}&{2}&{3}' -f $Script:BaseUri, $Name, $CategoryId, $Sort)
         } else {
             $Query = ('{0}/browse.php' -f $Script:BaseUri)
         }
