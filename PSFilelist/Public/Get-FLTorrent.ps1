@@ -6,9 +6,6 @@ function Get-FLTorrent {
         [Parameter()]
         [string]
         $Name,
-        # [Parameter()]
-        # [string]
-        # $Category='cat=0',
         [Parameter()]
         [string]
         $Search='searchin=0',
