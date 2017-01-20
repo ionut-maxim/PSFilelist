@@ -41,11 +41,8 @@ function Get-FLTorrent {
         return $RuntimeParameterDictionary
     }
 
-    begin {
+    BEGIN {
         $Category = $PsBoundParameters[$ParameterName]
-    }
-
-    process {
         if ($Category) {
             foreach ($Item in $CategoriesArray) {
                 if ($Item.Category -eq $Category) {
@@ -79,6 +76,9 @@ function Get-FLTorrent {
         $Document = New-Object -TypeName HtmlAgilityPack.HtmlDocument
         $Document.LoadHtml($HTML)
         $TorrentRows = $Document.DocumentNode.SelectNodes('//div[@class="torrentrow"]')
+    }
+
+    PROCESS {
         foreach ($TorrentRow in $TorrentRows) {
             #Parse Genres
             $Nodes = $TorrentRow.ChildNodes[1].ChildNodes[0].ChildNodes 

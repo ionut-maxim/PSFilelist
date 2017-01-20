@@ -12,10 +12,9 @@ function Start-FLDownload {
     )
     Process {
         try {
-            Write-Verbose ('{0}\{1}.torrent' -f $Path, $InputObject.ID)
             Invoke-WebRequest -Uri ('{0}/download.php?id={1}' -f $Script:BaseUri, $InputObject.ID) -WebSession $Script:session `
-                -OutFile ('{0}\{1}.torrent' -f $Path, $InputObject.ID) -Verbose:$false -ErrorAction Stop
-            Write-Output -InputObject (Get-Item -Path ('{0}\{1}.torrent' -f $Path, $InputObject.ID))
+                -OutFile ('{0}\{1}.torrent' -f $Path, $InputObject.Name) -Verbose:$false -ErrorAction Stop
+            Write-Output -InputObject (Get-Item -Path ('{0}\{1}.torrent' -f $Path, $InputObject.Name))
         }
         catch {
             Write-Error -Message ('{0}' -f $_.Exception.Message)
