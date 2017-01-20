@@ -53,9 +53,17 @@ function Get-FLTorrent {
                 }
             }
         }
-        if ($Name -or $Category -or $Sort) {
+        switch ($Sort) {
+            'Hibrid' {$SortID = '0'}
+            'Relevanta' {$SortID = '1'}
+            'Data' {$SortID = '2'}
+            'Marime' {$SortID = '3'}
+            'Downloads' {$SortID = '4'}
+            'Peers' {$SortID = '5'}
+        }
+        if ($Name -or $Category) {
             $Name = $Name -replace ' ', '+'
-            $Query = ('{0}/browse.php?search={1}&{2}&{3}' -f $Script:BaseUri, $Name, $CategoryId, $Sort)
+            $Query = ('{0}/browse.php?search={1}&{2}&searchin=0&sort={3}' -f $Script:BaseUri, $Name, $CategoryId, $SortID)
         } else {
             $Query = ('{0}/browse.php' -f $Script:BaseUri)
         }
@@ -63,11 +71,11 @@ function Get-FLTorrent {
         #Building the HTML Variable
         $HTML = (Invoke-WebRequest -Uri $Query -WebSession $Script:session -UseBasicParsing).RawContent
         if ($Pages) {
-            for ($i = 1 ; $i -le $Pages; $i++) {
-                $HTML += (Invoke-WebRequest -Uri ('{0}?page={1}' -f $Query, [string]$i) -WebSession $Script:session -UseBasicParsing).RawContent
+            for ($i = 1 ; $i -lt $Pages; $i++) {
+                $HTML += (Invoke-WebRequest -Uri ('{0}?page={1}' -f $Query, [string]$i) -WebSession $Script:session -UseBasicParsing).RawContent#
             }
         }
-
+        
         $Document = New-Object -TypeName HtmlAgilityPack.HtmlDocument
         $Document.LoadHtml($HTML)
         $TorrentRows = $Document.DocumentNode.SelectNodes('//div[@class="torrentrow"]')
