@@ -2,7 +2,18 @@
 #      environment configuration  # 
 #---------------------------------# 
 version: 0.0.{build}
+
+branches:
+  only:
+    - master
+
+skip_non_tags: true
+
+skip_commits:
+  message: /updated readme.*|update readme.*s/
+
 os: WMF 5
+
 install:
   - ps: . .\AppVeyor\AppVeyorInstall.ps1
 
@@ -10,12 +21,13 @@ environment:
   nugetKey:
     secure: lJ2WoG+Ko35dAfV/IKs/9kU7uWrNvF/3WxiXt+94iveAw3PQBaZOn0bhx+Tw0E2h
   github_access_token:
-    secure: Xk7jTkdE82qskQy9WPZK0zSafSjT6gK1SYxH8m4Aa8muCMQ4ACkkztJ3toh9DFlS
+    secure: fT1cVV+KHdibYi4GQomIvoNAjM2s0PXUp6C/Wn/LRWAFA4/1lSzxT56Khezus6xT
   ModuleName: PSFilelist
   flusername:
     secure: 5EbHvaWaZ++HAGnTDEZuuA==
   flpassword:
     secure: ZPLMdVUIeRdg0XL/JYR32w==
+
 #---------------------------------# 
 #      build configuration        # 
 #---------------------------------# 
