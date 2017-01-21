@@ -5,7 +5,7 @@
       $gitOut = git checkout master 2>&1
       Write-Host "Starting Deployment tag $env:APPVEYOR_REPO_TAG_NAME"      
       $moduleName = "PSFilelist"
-      $currentVersion = (Import-PowerShellDataFile .\$moduleName.psd1).ModuleVersion
+      $currentVersion = (Import-PowerShellDataFile .\PSFilelist\$moduleName.psd1).ModuleVersion
       ((Get-Content .\PSFilelist\PSFilelist.psd1).replace("ModuleVersion = '$($currentVersion)'", "ModuleVersion = '$($env:APPVEYOR_REPO_TAG_NAME).$($env:APPVEYOR_BUILD_VERSION)'")) | Set-Content .\PSFilelist\$moduleName.psd1
       Publish-Module -Path .\PSFilelist -NuGetApiKey $env:nugetKey
       
