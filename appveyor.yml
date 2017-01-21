@@ -1,0 +1,31 @@
+#---------------------------------# 
+#      environment configuration  # 
+#---------------------------------# 
+version: 0.0.{build}
+os: WMF 5
+install:
+  - ps: . .\AppVeyor\AppVeyorInstall.ps1
+
+environment:
+  nugetKey:
+    secure: lJ2WoG+Ko35dAfV/IKs/9kU7uWrNvF/3WxiXt+94iveAw3PQBaZOn0bhx+Tw0E2h
+  github_access_token:
+    secure: Xk7jTkdE82qskQy9WPZK0zSafSjT6gK1SYxH8m4Aa8muCMQ4ACkkztJ3toh9DFlS
+  ModuleName: PSFilelist
+#---------------------------------# 
+#      build configuration        # 
+#---------------------------------# 
+build_script: 
+  - ps: . .\AppVeyor\AppVeyorBuild.ps1
+
+#---------------------------------# 
+#      test configuration         # 
+#---------------------------------# 
+test_script: 
+  - ps: . .\AppVeyor\AppVeyorTest.ps1
+
+#---------------------------------# 
+#      deployment configuration   # 
+#---------------------------------# 
+deploy_script: 
+  - ps: . .\AppVeyor\AppveyorDeploy.ps1
