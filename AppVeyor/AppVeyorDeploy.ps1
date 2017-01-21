@@ -6,7 +6,7 @@
       Write-Host "Starting Deployment tag $env:APPVEYOR_REPO_TAG_NAME"      
       $moduleName = "PSFilelist"
       $currentVersion = (Import-PowerShellDataFile .\PSFilelist\$moduleName.psd1).ModuleVersion
-      ((Get-Content .\PSFilelist\PSFilelist.psd1).replace("ModuleVersion = '$($currentVersion)'", "ModuleVersion = '$($env:APPVEYOR_REPO_TAG_NAME).$($env:APPVEYOR_BUILD_VERSION)'")) | Set-Content .\PSFilelist\$moduleName.psd1
+      ((Get-Content .\PSFilelist\PSFilelist.psd1).replace("ModuleVersion = '$($currentVersion)'", "ModuleVersion = '$($env:APPVEYOR_REPO_TAG_NAME)'")) | Set-Content .\PSFilelist\$moduleName.psd1
       Publish-Module -Path .\PSFilelist -NuGetApiKey $env:nugetKey
       
       git config --global core.safecrlf false
