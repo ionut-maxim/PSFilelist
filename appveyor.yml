@@ -1,7 +1,7 @@
 #---------------------------------# 
 #      environment configuration  # 
 #---------------------------------# 
-version: 0.0.{build}
+version: {build}
 
 skip_non_tags: true
 
