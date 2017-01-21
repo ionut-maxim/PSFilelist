@@ -15,7 +15,7 @@ Write-Host "Installed NuGet version '$($pkg.version)'"
 #---------------------------------# 
 [version]$ScriptAnalyzerVersion = '1.8.1'
 Install-Module -Name 'PSScriptAnalyzer' -Repository PSGallery -Force -ErrorAction Stop -MaximumVersion $ScriptAnalyzerVersion
-Install-Module -Name 'Pester','PSFilelist' -Repository PSGallery -Force -ErrorAction Stop
+Install-Module -Name 'Pester' -Repository PSGallery -Force -ErrorAction Stop
 
 #---------------------------------# 
 # Update PSModulePath             # 
@@ -26,7 +26,7 @@ $env:PSModulePath = $env:PSModulePath + ";" + "C:\projects"
 #---------------------------------# 
 # Validate                        # 
 #---------------------------------# 
-$RequiredModules  = 'PSScriptAnalyzer','Pester','.\PSFilelist'
+$RequiredModules  = 'PSScriptAnalyzer','Pester'
 $InstalledModules = Get-Module -Name $RequiredModules -ListAvailable
 if ( ($InstalledModules.count -lt $RequiredModules.Count) -or ($Null -eq $InstalledModules)) { 
   throw "Required modules are missing."
