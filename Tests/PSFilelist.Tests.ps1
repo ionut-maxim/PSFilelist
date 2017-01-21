@@ -13,12 +13,12 @@ Import-Module $ManifestPath -Verbose:$false
 
 Describe "Invoke-FLLogin" {
     It "Creates our session variable" {
-        Invoke-FLLogin -Username $env:flusername -Password $env:flpassword | Should Not Throw
+        {Invoke-FLLogin -Username $env:flusername -Password $env:flpassword} | Should Not Throw
     }
 }
 
 Describe "Get-FLTorrent" {
     It "Gets one Filelist.Torrent object" {
-        Get-FLTorrent | Select-Object -First 1 | Should BeOfType Filelist.Torrent
+        Get-FLTorrent | Select-Object -First 1 | Should Not BeNullOrEmpty
     }
 }
