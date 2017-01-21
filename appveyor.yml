@@ -12,6 +12,10 @@ environment:
   github_access_token:
     secure: Xk7jTkdE82qskQy9WPZK0zSafSjT6gK1SYxH8m4Aa8muCMQ4ACkkztJ3toh9DFlS
   ModuleName: PSFilelist
+  username:
+    secure: 5EbHvaWaZ++HAGnTDEZuuA==
+  password:
+    secure: ZPLMdVUIeRdg0XL/JYR32w==
 #---------------------------------# 
 #      build configuration        # 
 #---------------------------------# 

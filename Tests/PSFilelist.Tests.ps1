@@ -11,8 +11,14 @@ if (Get-Module -Name $ModuleName)
 }
 Import-Module $ManifestPath -Verbose:$false
 
-Describe "Get-FLLogin" {
-    It "Outputs Hello World" {
-        Get-HelloWorld | Should be 'Hello World!'
+Describe "Invoke-FLLogin" {
+    It "Creates our session variable" {
+        Invoke-FLLogin | Should Not Throw
+    }
+}
+
+Describe "Get-FLTorrent" {
+    It "Gets one Filelist.Torrent object" {
+        Get-FLTorrent | Select-Object -First 1 | Should BeOfType Filelist.Torrent
     }
 }
