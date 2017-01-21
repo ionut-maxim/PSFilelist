@@ -8,7 +8,7 @@ Write-Host 'Running AppVeyor deploy script' -ForegroundColor Yellow
 #---------------------------------# 
 Write-Host 'Creating new module manifest'
 
-$ModuleManifestPath = Join-Path -path "$pwd" -ChildPath ("$env:ModuleName"+'.psd1')
+$ModuleManifestPath = Join-Path -path "$pwd" -ChildPath ("$env:ModuleName\$env:ModuleName"+'.psd1')
 $ModuleManifest     = Get-Content $ModuleManifestPath -Raw
 
 Write-Host "Updating module manifest to version: $env:APPVEYOR_BUILD_VERSION"
@@ -18,11 +18,11 @@ Write-Host "Updating module manifest to version: $env:APPVEYOR_BUILD_VERSION"
 # Publish to PS Gallery           # 
 #---------------------------------# 
 
-if ( ($env:APPVEYOR_REPO_NAME -notmatch 'PowerShellOrg') -or ($env:APPVEYOR_REPO_BRANCH -notmatch 'master') )
-{
-    Write-Host "Finished testing of branch: $env:APPVEYOR_REPO_BRANCH - Exiting"
-    exit;
-}
+#if ( ($env:APPVEYOR_REPO_NAME -notmatch 'PowerShellOrg') -or ($env:APPVEYOR_REPO_BRANCH -notmatch 'master') )
+#{
+#    Write-Host "Finished testing of branch: $env:APPVEYOR_REPO_BRANCH - Exiting"
+#    exit;
+#}
 
 Write-Host "Publishing module to Powershell Gallery: "
 Publish-Module -Name $env:ModuleName -NuGetApiKey $env:nugetKey
