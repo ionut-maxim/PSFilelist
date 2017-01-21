@@ -13,7 +13,7 @@ Import-Module $ManifestPath -Verbose:$false
 
 Describe "Invoke-FLLogin" {
     It "Creates our session variable" {
-        Invoke-FLLogin | Should Not Throw
+        Invoke-FLLogin -Username $env:flusername -Password $env:flpassword | Should Not Throw
     }
 }
 
