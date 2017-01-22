@@ -1,102 +1,51 @@
-[CmdletBinding()]
-param (
-	[string]$Path
-)
-
-$localpath = $(Join-Path -Path (Split-Path -Path $profile) -ChildPath '\Modules\PSFilelist')
-
-try
-{
-	if ($Path.length -eq 0)
-	{
-		
-		if ($PSCommandPath.Length -gt 0)
-		{
-			$path = Split-Path $PSCommandPath
-			if ($path -match "github")
-			{
-				$path = $localpath
-			}
-		}
-		else
-		{
-			$path = $localpath
-		}
+$ModuleName = 'PSFilelist'
+$ModulePaths = $env:PSModulePath -split ';'
+foreach ( $ModulePath in $ModulePaths ) {
+	switch -Regex ($ModulePath) {
+		"($env:USERNAME).*(WindowsPowershell)" { $CUModulePath = $ModulePath }
+        "(Program Files).*(WindowsPowershell)" { $MModulePath = $ModulePath }
 	}
 }
-catch
-{
-	$path = $localpath
+If ([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")) {
+	$InstallPath = ('{0}\{1}' -f $MModulePath, $ModuleName)
+} else {
+    $InstallPath = ('{0}\{1}' -f $CUModulePath, $ModuleName)
 }
 
-if ($path.length -eq 0)
-{
-	$path = $localpath
+Remove-Module PSFilelist -ErrorAction SilentlyContinue -Force
+Remove-Item -Path $InstallPath -Recurse -ErrorAction SilentlyContinue
+
+$URI = 'https://github.com/ionut-maxim/PSFilelist/archive/master.zip'
+$Temp = ([System.IO.Path]::GetTempPath()).TrimEnd("\")
+$Zipfile = ('{0}\{1}.zip' -f $Temp, $ModuleName)
+
+Write-Host ('Module will be installed in: {0}' -f $InstallPath) -ForegroundColor Yellow
+
+Write-Host 'Downloading archive from github'
+try {
+	Invoke-WebRequest -Uri $URI -OutFile $Zipfile
+} catch {
+	#try with default proxy and usersettings
+	Write-Host 'Probably using a proxy for internet access, trying default proxy settings'
+	(New-Object System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+	Invoke-WebRequest -Uri $URI -OutFile $Zipfile
 }
 
-Write-Output "Installing module to $path"
+# Unblock if there's a block
+Unblock-File -Path $Zipfile -ErrorAction SilentlyContinue
 
-Remove-Module PSFilelist -ErrorAction SilentlyContinue
-$url = 'https://github.com/ionut-maxim/PSFilelist/archive/master.zip'
+Write-Host 'Unzipping' -ForegroundColor Yellow
 
-$temp = ([System.IO.Path]::GetTempPath()).TrimEnd("\")
-$zipfile = "$temp\PSFilelist.zip"
+# Keep it backwards compatible
+$Shell = New-Object -COM Shell.Application
+$ZipPackage = $Shell.NameSpace($Zipfile)
+$DestinationFolder = $Shell.NameSpace($Temp)
+$DestinationFolder.CopyHere($ZipPackage.Items())
 
-if (!(Test-Path -Path $path))
-{
-	try
-	{
-		Write-Output "Creating directory: $path"
-		New-Item -Path $path -ItemType Directory | Out-Null
-	}
-	catch
-	{
-		throw "Can't create $Path. You may need to Run as Administrator"
-	}
-}
-else
-{
-	try
-	{
-		Write-Output "Deleting previously installed module"
-		Remove-Item -Path "$path\*" -Force -Recurse
-	}
-	catch
-	{
-		throw "Can't delete $Path. You may need to Run as Administrator"
-	}
-}
+Write-Host 'Cleaning up' -ForegroundColor Yellow
+Move-Item -Path ('{0}\{1}-master\{1}' -f $Temp, $ModuleName) -Destination $InstallPath -Force
+Remove-Item -Path ('{0}\{1}-master' -f $Temp, $ModuleName) -Recurse -Force
+Remove-Item -Path $Zipfile -Recurse -Force
 
-Write-Output "Downloading archive from github"
-	try
-	{
-		Invoke-WebRequest $url -OutFile $zipfile
-	}
-	catch
-	{
-		#try with default proxy and usersettings
-		Write-Output "Probably using a proxy for internet access, trying default proxy settings"
-		(New-Object System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
-		Invoke-WebRequest $url -OutFile $zipfile
-	}
-	
-	# Unblock if there's a block
-	Unblock-File $zipfile -ErrorAction SilentlyContinue
-	
-	Write-Output "Unzipping"
-	
-	# Keep it backwards compatible
-	$shell = New-Object -COM Shell.Application
-	$zipPackage = $shell.NameSpace($zipfile)
-	$destinationFolder = $shell.NameSpace($temp)
-	$destinationFolder.CopyHere($zipPackage.Items())
-	
-	Write-Output "Cleaning up"
-	Move-Item -Path "$temp\PSFilelist-master\PSFilelist" $path
-	Remove-Item -Path "$temp\PSFilelist-master"
-	Remove-Item -Path $zipfile
-	
-	Write-Output "Done!"
-	if ((Get-Command -Module PSFilelist).count -eq 0) { Import-Module "$path\PSFilelist.psd1" -Force }
-	Get-Command -Module PSFilelist
-	Write-Output "`n`nIf you experience any function missing errors after update, please restart PowerShell or reload your profile."
+Write-Host 'Installation complete!' -ForegroundColor Green
+Write-Host 'If you experience any function missing errors after update, please restart PowerShell or reload your profile.' -ForegroundColor Yellow

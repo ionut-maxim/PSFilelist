@@ -20,7 +20,12 @@ function Get-FLTorrent {
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
         $AttributeCollection.Add($ParameterAttribute)
-        $HTML = Invoke-WebRequest -Uri ('{0}/browse.php' -f $Script:BaseUri) -WebSession $Script:session
+        try {
+            $HTML = Invoke-WebRequest -Uri ('{0}/browse.php' -f $Script:BaseUri) -WebSession $Script:session
+        } catch {
+            break
+        }
+        
         $Document = New-Object -TypeName HtmlAgilityPack.HtmlDocument
         $Document.LoadHtml($HTML)
         $Links = $Document.DocumentNode.SelectNodes('//td[@class="noborder"]//a')
@@ -50,6 +55,10 @@ function Get-FLTorrent {
                 }
             }
         }
+        if ( -Not ($Script:session) ) {
+            Write-Output 'You must first login to Filelist using the cmdlet Invoke-FLLogin'
+            Break
+        }
         switch ($Sort) {
             'Hibrid' {$SortID = '0'}
             'Relevanta' {$SortID = '1'}
@@ -66,16 +75,23 @@ function Get-FLTorrent {
         }
         
         #Building the HTML Variable
-        $HTML = (Invoke-WebRequest -Uri $Query -WebSession $Script:session -UseBasicParsing).RawContent
-        if ($Pages) {
-            for ($i = 1 ; $i -lt $Pages; $i++) {
-                $HTML += (Invoke-WebRequest -Uri ('{0}?page={1}' -f $Query, [string]$i) -WebSession $Script:session -UseBasicParsing).RawContent#
+        try {
+            $HTML = (Invoke-WebRequest -Uri $Query -WebSession $Script:session -UseBasicParsing -ErrorAction Stop).RawContent
+            if ($Pages) {
+                for ($i = 1 ; $i -lt $Pages; $i++) {
+                    $HTML += (Invoke-WebRequest -Uri ('{0}?page={1}' -f $Query, [string]$i) -WebSession $Script:session -UseBasicParsing -ErrorAction Stop).RawContent#
+                }
             }
+        } catch {
+            Write-Error $Error[0]
+            break
         }
-        
+            
         $Document = New-Object -TypeName HtmlAgilityPack.HtmlDocument
         $Document.LoadHtml($HTML)
         $TorrentRows = $Document.DocumentNode.SelectNodes('//div[@class="torrentrow"]')
+        
+        
     }
 
     PROCESS {
@@ -123,7 +139,7 @@ function Get-FLTorrent {
                 Category = [string]$TorrentRow.ChildNodes[0].ChildNodes.ChildNodes.ChildNodes.Attributes[2].Value
                 CategoryID = [int]($TorrentRow.ChildNodes[0].ChildNodes.ChildNodes.Attributes.Value).Replace('browse.php?cat=','')
                 DateAdded = $DateAdded
-                Size = [long]$Size
+                Length = [long]$Size
                 Seeders = [int]$TorrentRow.ChildNodes[8].InnerText
                 Leechers = [int]$TorrentRow.ChildNodes[9].InnerText
                 Uploader = [string]$TorrentRow.ChildNodes[10].InnerText

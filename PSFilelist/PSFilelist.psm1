@@ -16,3 +16,4 @@ Foreach($import in @($Public + $Private)) {
 }
 
 Update-FormatData -AppendPath (Join-Path $PSScriptRoot '*.format.ps1xml') -ErrorAction SilentlyContinue
+Update-TypeData -AppendPath (Join-Path $PSScriptRoot '*.types.ps1xml') -ErrorAction SilentlyContinue

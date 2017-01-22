@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Types>
+  <Type>
+    <Name>Filelist.Torrent</Name>
+    <Members>
+        <ScriptProperty>
+            <Name>FileSize</Name>
+            <GetScriptBlock>
+                 switch ($This.Length) {
+                    # Bytes
+                    {($_ -ge 0) -and ($_ -le 1023)} {"$('{0:N2}' -f $_) B"; break}
+ 
+                    # Kilobytes
+                    {($_ -ge 1024) -and ($_ -le 1048575)} {"$('{0:N2}' -f ($_/1KB)) KB"; break}
+ 
+                    # Megabytes
+                    {($_ -ge 1048576) -and ($_ -le 1073741824)} {"$('{0:N2}' -f ($_/1MB)) MB"; break}
+ 
+                    # Gigabytes
+                    {$_ -ge 1073741825} {"$('{0:N2}' -f ($_/1GB)) GB"; break}
+ 
+                    default {Write-Warning -Message 'Unknown Error.'}
+                }
+            </GetScriptBlock>
+        </ScriptProperty>   
+    </Members>
+    </Type>
+</Types>

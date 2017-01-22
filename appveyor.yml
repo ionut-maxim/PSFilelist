@@ -1,6 +1,4 @@
-#---------------------------------# 
-#      environment configuration  # 
-#---------------------------------# 
+# environment configuration
 version: 0.0.{build}
 
 skip_non_tags: true
@@ -24,20 +22,14 @@ environment:
   flpassword:
     secure: ZPLMdVUIeRdg0XL/JYR32w==
 
-#---------------------------------# 
-#      build configuration        # 
-#---------------------------------# 
+# build configuration
 build_script: 
   - ps: . .\AppVeyor\AppVeyorBuild.ps1
 
-#---------------------------------# 
-#      test configuration         # 
-#---------------------------------# 
+# test configuration 
 test_script: 
   - ps: . .\AppVeyor\AppVeyorTest.ps1
 
-#---------------------------------# 
-#      deployment configuration   # 
-#---------------------------------# 
+# deployment configuration
 deploy_script: 
   - ps: . .\AppVeyor\AppveyorDeploy.ps1
