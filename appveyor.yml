@@ -3,9 +3,6 @@ version: 0.0.{build}
 
 skip_non_tags: true
 
-skip_commits:
-  message: /updated readme.*|update readme.*s/
-
 os: WMF 5
 
 install:
