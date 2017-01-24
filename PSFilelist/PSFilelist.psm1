@@ -1,6 +1,10 @@
 #TODO 'Generate help with platyPS'
 $BaseUri = 'http://filelist.ro'
-Import-Module ('{0}\lib\HtmlAgilityPack.NetCore.dll' -f $PSScriptRoot)
+switch ($PSVersionTable.PSEdition) {
+    'Desktop' { Import-Module ('{0}\lib\HtmlAgilityPack.NetCore.dll' -f $PSScriptRoot) }
+    'Core' { Import-Module ('{0}\lib\HtmlAgilityPack.dll' -f $PSScriptRoot) }
+}
+
 $ProgressPreference = 'SilentlyContinue'
 
 $Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )

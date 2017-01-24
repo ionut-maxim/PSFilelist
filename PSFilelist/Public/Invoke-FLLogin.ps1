@@ -6,9 +6,10 @@ function Invoke-FLLogin {
         [Parameter(Mandatory=$true)][string]$Password
     )
     
-    $Request = Invoke-WebRequest -Uri $Script:BaseUri -SessionVariable Script:session
-    $Form = $Request.Forms[0]
-    $Form.Fields['username'] = $Username
-    $Form.Fields['password'] = $Password
-    Invoke-WebRequest -Uri "$Script:BaseUri/$($Form.Action)" -WebSession $Script:session -Method POST -Body $Form.Fields | Out-Null
+    $Request = Invoke-WebRequest -Uri $Script:BaseUri -SessionVariable Script:session -UseBasicParsing
+    $Parameters = @{ 
+        username = $Username
+        password = $Password 
+    }
+    Invoke-WebRequest -Uri "$Script:BaseUri/takelogin.php" -WebSession $Script:session -Method POST -Body $Parameters -UseBasicParsing
 }
