@@ -1,8 +1,8 @@
 #TODO 'Generate help with platyPS'
 $BaseUri = 'http://filelist.ro'
 switch ($PSVersionTable.PSEdition) {
-    'Desktop' { Import-Module ('{0}\lib\HtmlAgilityPack.NetCore.dll' -f $PSScriptRoot) }
-    'Core' { Import-Module ('{0}\lib\HtmlAgilityPack.dll' -f $PSScriptRoot) }
+    'Desktop' { Import-Module ('{0}\lib\HtmlAgilityPack.dll' -f $PSScriptRoot) }
+    'Core' { Import-Module ('{0}\lib\HtmlAgilityPack.NetCore.dll' -f $PSScriptRoot) } # Requires .NET Core Installed
 }
 
 $ProgressPreference = 'SilentlyContinue'
